@@ -1,0 +1,30 @@
+{
+  "name": "twitter-error-handler",
+  "version": "1.0.0",
+  "description": "Handle Twitter API errors",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "tap test/*.js",
+    "pretest": "npm run build",
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
+  "author": "Shalvah <hello@shalvah.me>",
+  "keywords": [
+    "errors",
+    "error handling",
+    "exceptions",
+    "exception handling",
+    "catch",
+    "twitter",
+    "twitter api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shalvah/twitter-error-handler.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "tap": "^12.6.2"
+  }
+}
