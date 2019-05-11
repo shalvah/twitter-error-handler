@@ -1,7 +1,7 @@
 {
   "name": "twitter-error-handler",
   "version": "1.0.0",
-  "description": "Handle Twitter API errors",
+  "description": "Handle errors from Twitter API calls",
   "main": "dist/index.js",
   "scripts": {
     "test": "tap test/*.js",
