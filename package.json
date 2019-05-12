@@ -20,5 +20,8 @@
     "type": "git",
     "url": "git+https://github.com/shalvah/twitter-error-handler.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tap": "^13.1.8"
+  }
 }
