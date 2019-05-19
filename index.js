@@ -73,7 +73,7 @@ class TwitterApiError extends Error {
     constructor(endpoint, errors, type = 'Unknown') {
         super(`[${type}]: Error from Twitter API call`);
         this.errors = errors;
-        this.code = errors[0].code;
+        this.code = parseInt(errors[0].code);
         this.endpoint = endpoint;
     }
 
