@@ -150,7 +150,7 @@ class ProblemWithPermissions extends TwitterApiError {
     }
 }
 
-const handleTwitterErrors = (response, endpoint) => {
+const handleTwitterErrors = (endpoint, response) => {
     const errors = response.allErrors || response.errors;
     switch (errors[0].code) {
         case codes.RATE_LIMIT_EXCEEDED:
