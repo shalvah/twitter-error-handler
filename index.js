@@ -140,7 +140,8 @@ class ProblemWithAuth extends TwitterApiError {
 }
 
 /**
- * For errors caused by permissions issues. For example, not allowed to view a protected tweet or DM a user.
+ * For errors caused by permissions issues.
+ * For example, not allowed to view a protected tweet or DM a user.
  */
 class ProblemWithPermissions extends TwitterApiError {
     constructor(endpoint, errors) {
@@ -149,8 +150,8 @@ class ProblemWithPermissions extends TwitterApiError {
     }
 }
 
-const handleTwitterErrors = (e, endpoint) => {
-    const errors = e.allErrors || e.errors;
+const handleTwitterErrors = (response, endpoint) => {
+    const errors = response.allErrors || response.errors;
     switch (errors[0].code) {
         case codes.RATE_LIMIT_EXCEEDED:
         case codes.HIT_TWEET_LIMIT:
