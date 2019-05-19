@@ -23,7 +23,7 @@ return t.get('statuses/mentions_timeline', options)
       } else if (error.includes("Invalid / suspended application")) {
           // This is very bad, as it means your app is broken for its users
       } else if (error.includes("Rate limit exceeded")
-        || error.includes("User is over daily status update limit")) {
+          || error.includes("User is over daily status update limit")) {
           // implement a backoff so Twitter doesn't suspend your app
       } // you get the idea...
   })
@@ -78,7 +78,7 @@ This package wraps the errors into a bunch of classes that represent the kinds o
 
 - The `endpoint` is the path to the API you called. It's helpful so you can easily track what calls triggered what errors in your logs.
 
-- The `response` object is the original Twitter API response, as a JavaScript object. This package was designed to work with [Twit](https://github.com/ttezel/twit#readme) (a very good Twitter API client). With Twit, the `response` object you pass in is the error in the catch block (as shown in the examples above)/ To use any other Twitter API client, you only need to pass in an `endpoint` and a `response` object matching the description above. 
+- The `response` object is the original Twitter API response, as a JavaScript object. This package was designed to work with [Twit](https://github.com/ttezel/twit#readme) (a very good Twitter API client). With Twit, the `response` object you pass in is the error in the catch block (as shown in the examples above). To use any other Twitter API client, you only need to pass in an `endpoint` and a `response` object matching the description above. 
 
 ## Output
 When you call the `handleTwitterErrors` function within a catch block, it wil perform checks on any errors passed to it and wrap the errors into a special Error object, and then throw it. The idea is to represent all [possible Twitter API errors](https://developer.twitter.com/en/docs/basics/response-codes.html) as an instance of one of the following
