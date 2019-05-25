@@ -71,7 +71,7 @@ const codes = {
  */
 class TwitterApiError extends Error {
     constructor(endpoint, errors, type = 'Unknown') {
-        super(`[${type}]: Error from Twitter API call`);
+        super(`[${type}]: Twitter API Error; endpoint=${endpoint}; error=${errors[0]}`);
         this.errors = errors;
         this.code = parseInt(errors[0].code);
         this.endpoint = endpoint;
