@@ -1,6 +1,6 @@
 # twitter-error-handler
 
-Handle errors from Twitter API calls like a boss. 😎
+Wrap errors from Twitter API calls like a boss. 😎
 
 ## Okay, what's this?
 
@@ -34,9 +34,9 @@ return t.get('statuses/mentions_timeline', options)
 But this isn't very optimal, is it? What happens if Twitter changes their error messages? Also, that code makes my eyes bleeeed. Here's what this package lets you do:
 
 ```javascript
-const { handleTwitterErrors, errors, codes } = require('twitter-error-handler');
+const { wrapTwitterErrors, errors, codes } = require('twitter-error-handler');
 return t.get('statuses/mentions_timeline', options)
-  .catch(e => handleTwitterErrors(e, 'statuses/mentions_timeline'))
+  .catch(e => wrapTwitterErrors(e, 'statuses/mentions_timeline'))
   .catch(e => {
       if (e instanceof errors.ProblemWithAuth) {
           // uh-oh, your token is wrong, do stuff
@@ -54,7 +54,7 @@ If you mix in the [aargh package](https://github.com/shalvah/aargh), even neater
 
 ```javascript
 return t.get('statuses/mentions_timeline', options)
-  .catch(e => handleTwitterErrors(e, 'statuses/mentions_timeline'))
+  .catch(e => wrapTwitterErrors(e, 'statuses/mentions_timeline'))
   .catch(e => {
       return aargh(e)
           .type(ProblemWithAuth, (e) => {
@@ -74,14 +74,14 @@ npm i twitter-error-handler
 ```
 
 ## Usage
-This package wraps the errors into a bunch of classes that represent the kinds of errors you can get from Twitter. To use this package, call the `handleTwitterErrors` function with an `endpoint` and a `response` object within your first catch (or try/catch or however you handle errors) statement after your Twitter API call.
+This package wraps the errors into a bunch of classes that represent the kinds of errors you can get from Twitter. To use this package, call the `wrapTwitterErrors` function with an `endpoint` and a `response` object within your first catch (or try/catch or however you handle errors) statement after your Twitter API call.
 
 - The `endpoint` is the path to the API you called. It's helpful so you can easily track what calls triggered what errors in your logs.
 
 - The `response` object is the original Twitter API response, as a JavaScript object. This package was designed to work with [Twit](https://github.com/ttezel/twit#readme) (a very good Twitter API client). With Twit, the `response` object you pass in is the error in the catch block (as shown in the examples above). To use any other Twitter API client, you only need to pass in an `endpoint` and a `response` object matching the description above. 
 
 ## Output
-When you call the `handleTwitterErrors` function within a catch block, it wil perform checks on any errors passed to it and wrap the errors into a special Error object, and then throw it. The idea is to represent all [possible Twitter API errors](https://developer.twitter.com/en/docs/basics/response-codes.html) as an instance of one of the following
+When you call the `wrapTwitterErrors` function within a catch block, it wil perform checks on any errors passed to it and wrap the errors into a special Error object, and then throw it. The idea is to represent all [possible Twitter API errors](https://developer.twitter.com/en/docs/basics/response-codes.html) as an instance of one of the following
 
 - `ProblemWithAppOrAccount`: This covers cases where your Twitter app or user account is having issues (for instance, account locked or app suspended by Twitter). You'll probably want to take action ASAP.
 - `ProblemWithTwitter`: For internal server errors and "Twitter is over capacity" errors. It's recommended to wait a few minutes before retrying.
@@ -109,7 +109,7 @@ When you call the `handleTwitterErrors` function within a catch block, it wil pe
 The various error codes are provided as properties of the `codes` object.
 
 - `name`: The name of the error class
-- `errors`: The original array of errors from the Twitter API response (as gotten from the `response` value passed to the `handleTwitterErrors` function)
-- `endpoint`: The endpoint for the API call (the same value passed to the `handleTwitterErrors` function)
+- `errors`: The original array of errors from the Twitter API response (as gotten from the `response` value passed to the `wrapTwitterErrors` function)
+- `endpoint`: The endpoint for the API call (the same value passed to the `wrapTwitterErrors` function)
 
 Calling the `valueOf()` method of any of the error objects returns a nice JSON representation of the above properties (useful for logging purposes).

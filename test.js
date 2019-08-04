@@ -1,7 +1,7 @@
 const tap = require('tap');
 
 const {
-    handleTwitterErrors,
+    wrapTwitterErrors,
     errors: {
         ProblemWithAuth,
         BadRequest
@@ -19,7 +19,7 @@ const t = new Twit({
 });
 
 t.get('statuses/mentions_timeline')
-    .catch(e => handleTwitterErrors('statuses/mentions_timeline', e))
+    .catch(e => wrapTwitterErrors('statuses/mentions_timeline', e))
     .catch(e => {
         tap.true(e instanceof ProblemWithAuth);
         tap.same(e.code, codes.INVALID_OR_EXPIRED_TOKEN);
@@ -27,7 +27,7 @@ t.get('statuses/mentions_timeline')
 
 
 t.get('rarararara')
-    .catch(e => handleTwitterErrors('rarararara', e))
+    .catch(e => wrapTwitterErrors('rarararara', e))
     .catch(e => {
         tap.true(e instanceof BadRequest);
         tap.same(e.code, codes.NOT_FOUND);

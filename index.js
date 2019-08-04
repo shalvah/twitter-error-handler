@@ -150,7 +150,7 @@ class ProblemWithPermissions extends TwitterApiError {
     }
 }
 
-const handleTwitterErrors = (endpoint, response) => {
+const wrapTwitterErrors = (endpoint, response) => {
     const errors = response.allErrors || response.errors;
     switch (errors[0].code) {
         case codes.RATE_LIMIT_EXCEEDED:
@@ -232,5 +232,5 @@ module.exports = {
         ProblemWithTwitter,
         TwitterApiError,
     },
-    handleTwitterErrors
+    wrapTwitterErrors,
 };
