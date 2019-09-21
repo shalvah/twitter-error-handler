@@ -33,5 +33,13 @@ t.get('rarararara')
         tap.same(e.code, codes.NOT_FOUND);
     });
 
+// A simple mock. We want to assert other errors are also propagated.
+t.get = () => Promise.reject(new RangeError());
+t.get('statuses/mentions_timeline', )
+    .catch(e => wrapTwitterErrors('statuses/mentions_timeline', e))
+    .catch(e => {
+        tap.true(e instanceof RangeError);
+    });
+
 const fakeResponse = {"message":"Invalid or expired token.","code":89,"allErrors":[{"code":89,"message":"Invalid or expired token."}],"twitterReply":{
     "errors":[{"code":89,"message":"Invalid or expired token."}]},"statusCode":401};
