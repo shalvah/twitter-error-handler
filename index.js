@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @typedef {{code: number, message: string}|string} TwitError
+ * @typedef {{allErrors: TwitError[], message?: string, code: number, twitterReply:  Object|string}} TwitResponse
+ */
+
 // See https://developer.twitter.com/en/docs/basics/response-codes.html
 const codes = {
     INVALID_COORDINATES: 3,
@@ -61,20 +66,18 @@ const codes = {
     DESKTOP_APPLICATIONS_ONLY_SUPPORT_OOB_OAUTH: 417,
 };
 
-/**
- * Generic error class.
- * Exposes:
- *  - a code, which is the Twitter error code from https://developer.twitter.com/en/docs/basics/response-codes.html
- *  - the endpoint which triggered the error
- *  - the errors object from the Twitter response
- *  - name: the name of the Error class
- */
 class TwitterApiError extends Error {
+    /**
+     * @param {string} endpoint The endpoint which triggered the error
+     * @param {TwitError[]} errors The errors object from the Twitter response
+     * @param {string} type Category of the error
+     */
     constructor(endpoint, errors, type = 'Unknown') {
         super(`[${type}]: Twitter API Error; endpoint=${endpoint}; error=${JSON.stringify(errors[0])}`);
         this.errors = errors;
-        this.code = parseInt(errors[0].code);
+        this.code = typeof errors[0] === "string" ? null : Number(errors[0].code);
         this.endpoint = endpoint;
+        this.name = 'Twitter API Error';
     }
 
     valueOf() {
@@ -150,11 +153,20 @@ class ProblemWithPermissions extends TwitterApiError {
     }
 }
 
+/**
+ *
+ * @param {string} endpoint
+ * @param {TwitResponse} response
+ */
 const wrapTwitterErrors = (endpoint, response) => {
-    const errors = response.allErrors || response.errors;
+    const errors = response.allErrors;
     if (!errors || !errors.length) {
         // In case some other error happened, we handle that
         throw response;
+    }
+
+    if (typeof errors[0] === "string") {
+        throw new TwitterApiError(endpoint, errors);
     }
 
     switch (errors[0].code) {

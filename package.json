@@ -1,12 +1,14 @@
 {
   "name": "twitter-error-handler",
-  "version": "2.0.1",
-  "description": "Wrap errors from Twitter API calls",
+  "version": "2.1.0",
+  "description": "Wrap errors from Twitter API calls.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "tap test.js --reporter  list",
-    "lint": "eslint index.js"
+    "lint": "eslint index.js",
+    "tsc": "tsc",
+    "prepublish": "npm run lint && npm run tsc"
   },
   "author": "Shalvah <hello@shalvah.me>",
   "keywords": [
