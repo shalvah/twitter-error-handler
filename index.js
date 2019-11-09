@@ -156,6 +156,7 @@ const wrapTwitterErrors = (endpoint, response) => {
         // In case some other error happened, we handle that
         throw response;
     }
+
     switch (errors[0].code) {
         case codes.RATE_LIMIT_EXCEEDED:
         case codes.HIT_TWEET_LIMIT:
