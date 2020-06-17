@@ -1,5 +1,8 @@
 # twitter-error-handler
 
+[![npm version](https://badge.fury.io/js/twitter-error-handler.svg)](https://badge.fury.io/js/twitter-error-handler)
+[![npm](https://img.shields.io/npm/dt/twitter-error-handler)](https://www.npmjs.com/package/twitter-error-handler)
+
 Wrap errors from Twitter API calls like a boss. 😎
 
 ## Okay, what's this?
