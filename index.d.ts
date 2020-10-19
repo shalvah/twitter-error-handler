@@ -69,6 +69,7 @@ export namespace codes {
     export const CALLBACK_URL_NOT_APPROVED: number;
     export const APP_SUSPENDED: number;
     export const DESKTOP_APPLICATIONS_ONLY_SUPPORT_OOB_OAUTH: number;
+    export const REPLIES_RESTRICTED: number;
 }
 /**
  * For when your Twitter app or user account is having issues (for instance, account locked or app suspended by Twitter).

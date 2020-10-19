@@ -64,6 +64,7 @@ const codes = {
     CALLBACK_URL_NOT_APPROVED: 415,
     APP_SUSPENDED: 416,
     DESKTOP_APPLICATIONS_ONLY_SUPPORT_OOB_OAUTH: 417,
+    REPLIES_RESTRICTED: 433,
 };
 
 class TwitterApiError extends Error {
@@ -227,6 +228,7 @@ const wrapTwitterErrors = (endpoint, response) => {
         case codes.CANT_DM_THIS_USER:
         case codes.COULDNT_DM:
         case codes.TWEET_PROTECTED:
+        case codes.REPLIES_RESTRICTED:
         case codes.OWNER_MUST_ALLOW_DMS_FROM_ANYONE:
             throw new ProblemWithPermissions(endpoint, errors);
         case codes.GOTO_NEW_API:
