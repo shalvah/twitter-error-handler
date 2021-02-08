@@ -4,7 +4,7 @@ const {
     wrapTwitterErrors,
     errors: {
         ProblemWithAuth,
-        BadRequest
+        NotFound
     },
     codes,
 } = require('./index');
@@ -26,10 +26,10 @@ t.get('statuses/mentions_timeline')
     });
 
 
-t.get('rarararara')
-    .catch(e => wrapTwitterErrors('rarararara', e))
+t.get('nonexistentpath')
+    .catch(e => wrapTwitterErrors('nonexistentpath', e))
     .catch(e => {
-        tap.true(e instanceof BadRequest);
+        tap.true(e instanceof NotFound);
         tap.same(e.code, codes.NOT_FOUND);
     });
 

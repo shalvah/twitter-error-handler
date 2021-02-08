@@ -8,24 +8,30 @@
 // See https://developer.twitter.com/en/docs/basics/response-codes.html
 const codes = {
     INVALID_COORDINATES: 3,
-    NO_LOCATION_ASSOCIATED_WITH_THE_SPECIFIED_IP_ADDRESS: 13,
-    NO_USER_MATCHES_FOR_SPECIFIED_TERMS: 17,
+    NO_DATA_FOR_COORDINATES_AND_RADIUS: 7,
+    NO_DATA_FOR_THAT_ID: 8,
+    MUST_PROVIDE_VALID_GEO_DATA: 12,
+    NO_LOCATION_FOR_THAT_IP_ADDRESS: 13,
+    NO_USER_MATCHES_THOSE_TERMS: 17,
+    MISSING_QUERY_PARAMS: 25,
     AUTH_FAILED: 32,
     NOT_FOUND: 34,
     CANT_REPORT_YOURSELF_FOR_SPAM: 36,
     PARAMETER_MISSING: 38,
-    ATTACHMENT__URL_INVALID: 44,
+    ATTACHMENT_URL_INVALID: 44,
     COULDNT_FIND_USER: 50,
     USER_SUSPENDED: 63,
     ACCOUNT_SUSPENDED: 64,
     GOTO_NEW_API: 68,
-    CLIENT_IS_NOT_PERMITTED: 87,
+    CLIENT_NOT_PERMITTED_TO_DO_THAT: 87,
     RATE_LIMIT_EXCEEDED: 88,
     INVALID_OR_EXPIRED_TOKEN: 89,
     SSL_REQUIRED: 92,
     APP_NOT_ALLOWED_TO_ACCESS_DMS: 93,
     UNABLE_TO_VERIFY_CREDENTIALS: 99,
-    PAST_ALLOWED_FIELD_LENGTH: 120,
+    USER_NOT_FOUND_IN_THE_LIST: 109,
+    USER_NOT_IN_THE_LIST: 110,
+    ACCOUNT_UPDATE_FAILED: 120,
     TWITTER_NEEDS_A_BREAK: 130,
     TWITTERS_DOWN_SORRY: 131,
     ALSO_AUTH_FAILED: 135,
@@ -35,18 +41,19 @@ const codes = {
     COULDNT_DM: 151,
     ALREADY_FOLLOWED: 160,
     CANT_FOLLOW_MORE_PEOPLE_NOW_SO_CHILL: 161,
+    COULDNT_DETERMINE_SOURCE_USER: 163,
     TWEET_PROTECTED: 179,
     HIT_TWEET_LIMIT: 185,
     TWEET_TOO_LONG: 186,
     DUPLICATE_TWEET: 187,
     INVALID_URL_PARAMETER: 195,
+    DEVICE_ERROR: 203,
     REACHED_LIMIT_FOR_SPAM_REPORTS: 205,
     OWNER_MUST_ALLOW_DMS_FROM_ANYONE: 214,
     BAD_AUTH_DATA: 215,
     YOUR_CREDENTIALS_DONT_COVER_THIS: 220,
     WE_FELT_LIKE_FLAGGING_YOU: 226,
-    USER_MUST_VERIFY_LOGIN: 231,
-    THIS_ENDPOINT_HAS_BEEN_RETIRED_SO_FUCK_OFF: 251,
+    THIS_ENDPOINT_HAS_BEEN_RETIRED: 251,
     APP_MUZZLED: 261,
     HAHA_CANT_MUTE_YOURSELF: 271,
     CANT_UNMUTE_BECAUSE_YOU_WERENT_MUTING: 272,
@@ -60,10 +67,15 @@ const codes = {
     SUBSCRIPTION_ALREADY_EXISTS: 355,
     REPLIED_TO_UNAVAILABLE_TWEET: 385,
     ONLY_ONE_ATTACHMENT_TYPE_ALLOWED: 386,
+    YOU_NEED_TO_ENABLE_COOKIES: 404,
     INVALID_URL: 407,
     CALLBACK_URL_NOT_APPROVED: 415,
     APP_SUSPENDED: 416,
     DESKTOP_APPLICATIONS_ONLY_SUPPORT_OOB_OAUTH: 417,
+    TWEET_UNAVAILABLE: 421,
+    TWEET_UNAVAILABLE_FOR_VIOLATING_RULES: 422,
+    TWEET_RESTRICTED_BY_TWITTER: 425,
+    INVALID_CONVERSATION_CONTROLS: 431,
     REPLIES_RESTRICTED: 433,
 };
 
@@ -95,10 +107,20 @@ class TwitterApiError extends Error {
  * For when your Twitter app or user account is having issues (for instance, account locked or app suspended by Twitter).
  * You'll probably want to take action ASAP.
  */
-class ProblemWithAppOrAccount extends TwitterApiError {
+class ProblemWithYourAppOrAccount extends TwitterApiError {
     constructor(endpoint, errors) {
-        super(endpoint, errors, 'AppOrAccount');
-        this.name = 'ProblemWithAppOrAccount';
+        super(endpoint, errors, 'YourAppOrAccount');
+        this.name = 'ProblemWithYourAppOrAccount';
+    }
+}
+
+/**
+ * For when the requested resource (eg Tweet/user) wasn't found
+ */
+class NotFound extends TwitterApiError {
+    constructor(endpoint, errors) {
+        super(endpoint, errors, 'NotFound');
+        this.name = 'NotFound';
     }
 }
 
@@ -182,31 +204,31 @@ const wrapTwitterErrors = (endpoint, response) => {
         case codes.ACCOUNT_LOCKED_TEMPORARILY:
         case codes.ACCOUNT_SUSPENDED:
         case codes.APP_SUSPENDED:
-        case codes.USER_SUSPENDED:
         case codes.APP_MUZZLED:
         case codes.CALLBACK_URL_NOT_APPROVED:
         case codes.DESKTOP_APPLICATIONS_ONLY_SUPPORT_OOB_OAUTH:
-        case codes.CLIENT_IS_NOT_PERMITTED:
+        case codes.CLIENT_NOT_PERMITTED_TO_DO_THAT:
         case codes.APP_NOT_ALLOWED_TO_ACCESS_DMS:
         case codes.YOUR_CREDENTIALS_DONT_COVER_THIS:
         case codes.WE_FELT_LIKE_FLAGGING_YOU:
-                throw new ProblemWithAppOrAccount(endpoint, errors);
+            throw new ProblemWithYourAppOrAccount(endpoint, errors);
         case codes.INVALID_COORDINATES:
+        case codes.NO_DATA_FOR_COORDINATES_AND_RADIUS:
+        case codes.NO_DATA_FOR_THAT_ID:
+        case codes.MUST_PROVIDE_VALID_GEO_DATA:
         case codes.CANT_REPORT_YOURSELF_FOR_SPAM:
         case codes.REPLIED_TO_UNAVAILABLE_TWEET:
-        case codes.NO_LOCATION_ASSOCIATED_WITH_THE_SPECIFIED_IP_ADDRESS:
-        case codes.NO_USER_MATCHES_FOR_SPECIFIED_TERMS:
-        case codes.NOT_FOUND:
         case codes.PARAMETER_MISSING:
-        case codes.ATTACHMENT__URL_INVALID:
-        case codes.COULDNT_FIND_USER:
+        case codes.ATTACHMENT_URL_INVALID:
         case codes.TWEET_TOO_LONG:
-        case codes.PAST_ALLOWED_FIELD_LENGTH:
+        case codes.ACCOUNT_UPDATE_FAILED:
         case codes.ALREADY_LIKED_THAT_SHIT:
-        case codes.NO_SUCH_TWEET:
         case codes.ALREADY_FOLLOWED:
+        case codes.USER_NOT_IN_THE_LIST:
+        case codes.COULDNT_DETERMINE_SOURCE_USER:
         case codes.DUPLICATE_TWEET:
         case codes.INVALID_URL_PARAMETER:
+        case codes.DEVICE_ERROR:
         case codes.HAHA_CANT_MUTE_YOURSELF:
         case codes.CANT_UNMUTE_BECAUSE_YOU_WERENT_MUTING:
         case codes.GIFS_NOT_ALLOWED_WITH_OTHER_IMAGES:
@@ -217,8 +239,21 @@ const wrapTwitterErrors = (endpoint, response) => {
         case codes.DM_TOO_LONG:
         case codes.SUBSCRIPTION_ALREADY_EXISTS:
         case codes.ONLY_ONE_ATTACHMENT_TYPE_ALLOWED:
+        case codes.YOU_NEED_TO_ENABLE_COOKIES:
         case codes.INVALID_URL:
+        case codes.INVALID_CONVERSATION_CONTROLS:
             throw new BadRequest(endpoint, errors);
+        case codes.NO_LOCATION_FOR_THAT_IP_ADDRESS:
+        case codes.NO_USER_MATCHES_THOSE_TERMS:
+        case codes.MISSING_QUERY_PARAMS:
+        case codes.NOT_FOUND:
+        case codes.COULDNT_FIND_USER:
+        case codes.USER_NOT_FOUND_IN_THE_LIST:
+        case codes.NO_SUCH_TWEET:
+        case codes.USER_SUSPENDED:
+        case codes.TWEET_UNAVAILABLE:
+        case codes.TWEET_UNAVAILABLE_FOR_VIOLATING_RULES:
+            throw new NotFound(endpoint, errors);
         case codes.INVALID_OR_EXPIRED_TOKEN:
         case codes.AUTH_FAILED:
         case codes.ALSO_AUTH_FAILED:
@@ -233,8 +268,7 @@ const wrapTwitterErrors = (endpoint, response) => {
             throw new ProblemWithPermissions(endpoint, errors);
         case codes.GOTO_NEW_API:
         case codes.SSL_REQUIRED:
-        case codes.USER_MUST_VERIFY_LOGIN:
-        case codes.THIS_ENDPOINT_HAS_BEEN_RETIRED_SO_FUCK_OFF:
+        case codes.THIS_ENDPOINT_HAS_BEEN_RETIRED:
         default:
             throw new TwitterApiError(endpoint, errors);
     }
@@ -243,7 +277,8 @@ const wrapTwitterErrors = (endpoint, response) => {
 module.exports = {
     codes,
     errors: {
-        ProblemWithAppOrAccount,
+        ProblemWithYourAppOrAccount,
+        NotFound,
         ProblemWithPermissions,
         RateLimited,
         BadRequest,
