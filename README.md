@@ -84,15 +84,18 @@ This package wraps the errors into a bunch of classes that represent the kinds o
 - The `response` object is the original Twitter API response, as a JavaScript object. This package was designed to work with [Twit](https://github.com/ttezel/twit#readme) (a very good Twitter API client). With Twit, the `response` object you pass in is the error in the catch block (as shown in the examples above). To use any other Twitter API client, you only need to pass in an `endpoint` and a `response` object matching the description above. 
 
 ## Output
-When you call the `wrapTwitterErrors` function within a catch block, it wil perform checks on any errors passed to it and wrap the errors into a special Error object, and then throw it. The idea is to represent all [possible Twitter API errors](https://developer.twitter.com/en/docs/basics/response-codes.html) as an instance of one of the following
+When you call the `wrapTwitterErrors` function within a catch block, it wil perform checks on any errors passed to it and wrap the errors into a special Error object, and then throw it. The idea is to represent all [possible Twitter API errors](https://developer.twitter.com/en/support/twitter-api/error-troubleshooting) as an instance of one of the following
 
-- `ProblemWithAppOrAccount`: This covers cases where your Twitter app or user account is having issues (for instance, account locked or app suspended by Twitter). You'll probably want to take action ASAP.
-- `ProblemWithTwitter`: For internal server errors and "Twitter is over capacity" errors. It's recommended to wait a few minutes before retrying.
-- `BadRequest`: For errors caused by bad requests (invalid parameters, overly long values, invalid urls etc).
+- `ProblemWithYourAppOrAccount`: This covers cases where your Twitter app or user account is having issues (for instance, account locked or app suspended by Twitter). You'll probably want to take action ASAP.
 - `RateLimited`: For errors caused by hitting a rate limit. You should implement backoff to avoid being banned by Twitter.
 - `ProblemWithAuth`: For errors caused by authentication issues.
+- `ProblemWithTwitter`: For internal server errors and "Twitter is over capacity" errors. It's recommended to wait a few minutes before retrying.
+- `BadRequest`: For errors caused by bad requests (invalid parameters, overly long values, invalid urls etc).
+- `NotFound`: For when the requested resource (eg Tweet/user) wasn't found.
 - `ProblemWithPermissions`: For errors caused by permissions issues. For example, not allowed to view a protected tweet or DM a user.
-- `TwitterApiError`: the base error class. Used for any errors which dont fall into the above groups; for instance, using a retired endpoint or no SSL.
+- `TwitterApiError`: the base error class. Used for any errors which don't fall into the above groups; for instance, using a retired endpoint or no SSL.
+
+If you need to take action based on a specific type of error, I recommend checking the response code rather than relying on the inferred class.
  
  Each error thrown by this package has the following properties:
 - `code`: The error code from the Twitter response. You can programmatically inspect the code and decide what specific action to take. For instance, for a rate limit error, to back off for a varying number of minutes depending on the error, we could do (from the last example):
