@@ -4,14 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres (or tries to🤷‍♂️) to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-### Added
-
-### Changed
-
-### Fixed
-
-### Removed
+## [3.1.0] - Monday, 8 February 2021
+- Re-added `USER_MUST_VERIFY_LOGIN` (231).
+- Added undocumented code `BLOCKED_BY_USER` (136)
+- Moved `CANT_DM_THE_FELLA` (349) from `BadRequest` to `ProblemWithPermissions`
 
 ## [3.0.0] - Monday, 8 February 2021
 - Added a new error type, `NotFound`
